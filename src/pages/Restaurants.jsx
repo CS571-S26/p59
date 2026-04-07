@@ -29,7 +29,8 @@ export default function Restaurants() {
     if (price !== 'any' && r.price !== price) return false
     if (query) {
       const q = query.toLowerCase()
-      if (!(`${r.name} ${r.signatureDishes.join(' ')} ${r.location}`.toLowerCase().includes(q))) return false
+      const hay = `${r.name} ${r.cuisine || ''} ${r.signatureDishes?.join(' ') || ''} ${r.location || ''}`
+      if (!(hay.toLowerCase().includes(q))) return false
     }
     if (selectedTag && selectedTag !== 'any') {
       const lowerVibes = (r.vibe || []).map((v) => v.toLowerCase())

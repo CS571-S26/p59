@@ -1,22 +1,25 @@
 import React from 'react'
 import { Container, Row, Col, Card, Badge, ListGroup, Button } from 'react-bootstrap'
 import { useParams, useNavigate } from 'react-router-dom'
+import { restaurants as sampleRestaurants } from '../data/sampleRestaurants'
 
 export default function RestaurantDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
 
-  const mockRestaurant = {
+  const restaurant = sampleRestaurants.find((r) => String(r.id) === String(id))
+
+  const mockRestaurant = restaurant || {
     id: parseInt(id),
-    name: 'Campus Deli',
-    cuisine: 'American',
+    name: 'Unknown Restaurant',
+    cuisine: 'Unknown',
     price: '$',
-    vibe: ['Study Spot', 'Casual'],
-    reputation: 4.5,
-    popularItems: ['Student Special', 'Grilled Cheese', 'Turkey Club'],
-    specials: ['Tuesday: Half off sandwiches', 'Happy Hour 3-5pm'],
-    description: 'A cozy neighborhood spot popular with students for quick, affordable meals.',
-    address: '123 Main St, College Town'
+    vibe: [],
+    reputation: null,
+    popularItems: [],
+    specials: [],
+    description: 'No description available.',
+    address: 'Unknown'
   }
 
   return (
@@ -44,7 +47,7 @@ export default function RestaurantDetail() {
             <Card.Body>
               <Card.Title>Vibes</Card.Title>
               <div>
-                {mockRestaurant.vibe.map((v, idx) => (
+                {(mockRestaurant.vibe || []).map((v, idx) => (
                   <Badge key={idx} bg="info" className="me-2 mb-2">{v}</Badge>
                 ))}
               </div>
@@ -55,7 +58,7 @@ export default function RestaurantDetail() {
             <Card.Body>
               <Card.Title>Popular Menu Items</Card.Title>
               <ListGroup variant="flush">
-                {mockRestaurant.popularItems.map((item, idx) => (
+                {(mockRestaurant.popularItems || mockRestaurant.signatureDishes || []).map((item, idx) => (
                   <ListGroup.Item key={idx}>{item}</ListGroup.Item>
                 ))}
               </ListGroup>
@@ -66,7 +69,7 @@ export default function RestaurantDetail() {
             <Card.Body>
               <Card.Title>Specials</Card.Title>
               <ListGroup variant="flush">
-                {mockRestaurant.specials.map((special, idx) => (
+                {(mockRestaurant.specials || []).map((special, idx) => (
                   <ListGroup.Item key={idx}>{special}</ListGroup.Item>
                 ))}
               </ListGroup>

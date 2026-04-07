@@ -22,6 +22,7 @@ export default function Recipes() {
   const [cuisine, setCuisine] = useState('any')
   const [difficulty, setDifficulty] = useState('any')
   const [allergen, setAllergen] = useState('any')
+  const [copycatOnly, setCopycatOnly] = useState(false)
   const [selectedTag, setSelectedTag] = useState('any')
 
   function toggleTag(tag) {
@@ -29,9 +30,21 @@ export default function Recipes() {
   }
 
   const filtered = sampleRecipes.filter((r) => {
+    if (copycatOnly && !r.isCopycat) return false
     if (cuisine !== 'any' && r.cuisine && r.cuisine !== cuisine) return false
     if (difficulty !== 'any' && r.difficulty !== difficulty) return false
-    if (query && !r.name.toLowerCase().includes(query.toLowerCase())) return false
+    if (query) {
+      const q = query.toLowerCase()
+      const fields = [
+        r.name,
+        r.restaurant,
+        r.method,
+        r.cuisine,
+        ...(r.dietary || [])
+      ]
+      const hay = fields.filter(Boolean).join(' ').toLowerCase()
+      if (!hay.includes(q)) return false
+    }
     if (selectedTag && selectedTag !== 'any') {
       const t = selectedTag
       if (t === '5 ingredients or less' && !(r.ingredientsCount <= 5)) return false
@@ -67,6 +80,14 @@ export default function Recipes() {
         <Col>
           <div className="tag-buttons mb-2">
             <Button variant={selectedTag === 'any' ? 'primary' : 'outline-primary'} size="sm" onClick={() => setSelectedTag('any')}>All</Button>
+            <Button
+              size="sm"
+              className="ms-2"
+              variant={copycatOnly ? 'primary' : 'outline-primary'}
+              onClick={() => setCopycatOnly((s) => !s)}
+            >
+              <span className="me-2 text-primary">★</span>Copycat
+            </Button>
             {TAGS.map((tag) => (
               <Button
                 key={tag}
@@ -114,7 +135,7 @@ export default function Recipes() {
               </Form.Select>
             </Form.Group>
 
-            <Button variant="secondary" size="sm" onClick={() => { setCuisine('any'); setDifficulty('any'); setAllergen('any'); setSelectedTag('any'); setQuery('') }}>
+            <Button variant="secondary" size="sm" onClick={() => { setCuisine('any'); setDifficulty('any'); setAllergen('any'); setSelectedTag('any'); setQuery(''); setCopycatOnly(false) }}>
               Reset
             </Button>
           </Card>
@@ -124,7 +145,7 @@ export default function Recipes() {
           <Row className="g-3">
             {filtered.map((r) => (
               <Col key={r.id} xs={12} sm={6} md={4}>
-                <RecipeCard id={r.id} title={r.name} difficulty={r.difficulty} time={`${r.time}m`} image={null} />
+                <RecipeCard id={r.id} title={r.name} difficulty={r.difficulty} time={`${r.time}m`} image={null} cuisine={r.cuisine} isCopycat={r.isCopycat} />
               </Col>
             ))}
           </Row>
