@@ -145,7 +145,7 @@ export default function Recipes() {
           <Row className="g-3">
             {filtered.map((r) => (
               <Col key={r.id} xs={12} sm={6} md={4}>
-                <RecipeCard id={r.id} title={r.name} difficulty={r.difficulty} time={`${r.time}m`} image={null} cuisine={r.cuisine} isCopycat={r.isCopycat} />
+                <RecipeCard id={r.id} title={r.name} difficulty={r.difficulty} time={`${r.time}m`} image={r.image} cuisine={r.cuisine} isCopycat={r.isCopycat} />
               </Col>
             ))}
           </Row>

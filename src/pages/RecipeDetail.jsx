@@ -33,6 +33,7 @@ export default function RecipeDetail() {
     time: recipe?.time || mockRecipe.time,
     complexity: recipe?.complexity || mockRecipe.complexity,
     cuisine: recipe?.cuisine || mockRecipe.cuisine,
+    image: recipe?.image || null,
     restaurantsWithDish: recipe?.restaurantsWithDish || mockRecipe.restaurantsWithDish || [],
     ingredients: recipe?.ingredients || mockRecipe.ingredients || [],
     instructions: recipe?.instructions || mockRecipe.instructions || [],
@@ -90,6 +91,12 @@ export default function RecipeDetail() {
         </Col>
 
         <Col md={4}>
+          {data.image && (
+            <Card className="mb-4">
+              <Card.Img variant="top" src={data.image} alt={`${data.title} prepared dish`} style={{height: '250px', objectFit: 'cover'}} />
+            </Card>
+          )}
+          
           <Card className="mb-4">
             <Card.Body>
               <Card.Title>Find This Dish At</Card.Title>
@@ -108,7 +115,13 @@ export default function RecipeDetail() {
             <Card.Body>
               <Card.Title>Reviews</Card.Title>
               <p className="text-muted">No reviews yet. Be the first to review!</p>
-              <Button variant="primary" size="sm">Leave a Review</Button>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => navigate('/submit', { state: { type: 'recipe', id: data.id, name: data.title } })}
+              >
+                Leave a Review
+              </Button>
             </Card.Body>
           </Card>
         </Col>

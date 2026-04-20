@@ -111,7 +111,7 @@ export default function Restaurants() {
           <Row className="g-3">
             {filtered.map((r) => (
               <Col key={r.id} xs={12} sm={6} md={4}>
-                <RestaurantCard id={r.id} name={r.name} cuisine={r.cuisine} price={r.price} signature={r.signatureDishes?.[0]} image={null} />
+                <RestaurantCard id={r.id} name={r.name} cuisine={r.cuisine} price={r.price} signature={r.signatureDishes?.[0]} image={r.image} />
               </Col>
             ))}
           </Row>
