@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Container, Row, Col, Form, Card, Button } from 'react-bootstrap'
 import RestaurantCard from '../components/RestaurantCard'
 import { restaurants as sampleRestaurants } from '../data/sampleRestaurants'
@@ -19,12 +19,27 @@ export default function Restaurants() {
   const [cuisine, setCuisine] = useState('any')
   const [price, setPrice] = useState('any')
   const [selectedTag, setSelectedTag] = useState('any')
+  const [restaurantsWithReviewCounts, setRestaurantsWithReviewCounts] = useState([])
+
+  // Load restaurants with user review counts from localStorage
+  useEffect(() => {
+    const userReviews = JSON.parse(localStorage.getItem('userSubmittedReviews') || '[]')
+    const reviewCounts = {}
+    userReviews.forEach(review => {
+      reviewCounts[review.name] = (reviewCounts[review.name] || 0) + 1
+    })
+    const enhancedRestaurants = sampleRestaurants.map(restaurant => ({
+      ...restaurant,
+      communityReviewCount: reviewCounts[restaurant.name] || 0
+    }))
+    setRestaurantsWithReviewCounts(enhancedRestaurants)
+  }, [])
 
   function toggleTag(tag) {
     setSelectedTag((prev) => (prev === tag ? 'any' : tag))
   }
 
-  const filtered = sampleRestaurants.filter((r) => {
+  const filtered = restaurantsWithReviewCounts.filter((r) => {
     if (cuisine !== 'any' && r.cuisine !== cuisine) return false
     if (price !== 'any' && r.price !== price) return false
     if (query) {
@@ -39,7 +54,7 @@ export default function Restaurants() {
     return true
   })
 
-  const cuisines = Array.from(new Set(sampleRestaurants.map((r) => r.cuisine)))
+  const cuisines = Array.from(new Set(restaurantsWithReviewCounts.map((r) => r.cuisine)))
 
   return (
     <Container fluid>

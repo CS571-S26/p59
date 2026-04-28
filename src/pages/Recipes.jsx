@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Container, Row, Col, Form, Card, Button } from 'react-bootstrap'
 import RecipeCard from '../components/RecipeCard'
 import { recipes as sampleRecipes } from '../data/sampleRecipes'
@@ -24,12 +24,34 @@ export default function Recipes() {
   const [allergen, setAllergen] = useState('any')
   const [copycatOnly, setCopycatOnly] = useState(false)
   const [selectedTag, setSelectedTag] = useState('any')
+  const [allRecipes, setAllRecipes] = useState([])
+
+  // Load user-submitted recipes from localStorage
+  useEffect(() => {
+    const userRecipes = JSON.parse(localStorage.getItem('userSubmittedRecipes') || '[]')
+    const formattedUserRecipes = userRecipes.map(recipe => ({
+      id: recipe.id,
+      name: recipe.name,
+      cuisine: recipe.cuisine,
+      difficulty: recipe.difficulty,
+      time: recipe.time,
+      isCopycat: recipe.isCopycat,
+      copycatOf: recipe.copycatOf,
+      dietary: [],
+      ingredientsCount: 0,
+      method: 'User Submitted',
+      isUserSubmitted: true,
+      image: recipe.image,
+      instructions: recipe.instructions
+    }))
+    setAllRecipes([...sampleRecipes, ...formattedUserRecipes])
+  }, [])
 
   function toggleTag(tag) {
     setSelectedTag((prev) => (prev === tag ? 'any' : tag))
   }
 
-  const filtered = sampleRecipes.filter((r) => {
+  const filtered = allRecipes.filter((r) => {
     if (copycatOnly && !r.isCopycat) return false
     if (cuisine !== 'any' && r.cuisine && r.cuisine !== cuisine) return false
     if (difficulty !== 'any' && r.difficulty !== difficulty) return false
@@ -56,7 +78,7 @@ export default function Recipes() {
     return true
   })
 
-  const cuisines = Array.from(new Set(sampleRecipes.map((r) => r.cuisine || 'Other')))
+  const cuisines = Array.from(new Set(allRecipes.map((r) => r.cuisine || 'Other')))
 
   return (
     <Container fluid>
@@ -145,7 +167,7 @@ export default function Recipes() {
           <Row className="g-3">
             {filtered.map((r) => (
               <Col key={r.id} xs={12} sm={6} md={4}>
-                <RecipeCard id={r.id} title={r.name} difficulty={r.difficulty} time={`${r.time}m`} image={r.image} cuisine={r.cuisine} isCopycat={r.isCopycat} />
+                <RecipeCard id={r.id} title={r.name} difficulty={r.difficulty} time={`${r.time}m`} image={r.image} cuisine={r.cuisine} isCopycat={r.isCopycat} isUserSubmitted={r.isUserSubmitted} />
               </Col>
             ))}
           </Row>

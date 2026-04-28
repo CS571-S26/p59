@@ -10,7 +10,7 @@ import RecipeDetail from './pages/RecipeDetail'
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/p59/">
       <Navigation />
       <main className="p-4">
         <Routes>

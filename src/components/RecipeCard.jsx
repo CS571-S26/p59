@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, Button, Badge } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
-export default function RecipeCard({ id, title, difficulty, time, image, isCopycat, cuisine }) {
+export default function RecipeCard({ id, title, difficulty, time, image, isCopycat, cuisine, isUserSubmitted }) {
 	const imgSrc = image
 
 	return (
@@ -18,7 +18,10 @@ export default function RecipeCard({ id, title, difficulty, time, image, isCopyc
 					<div>
 						<div className="d-flex align-items-center justify-content-between">
 							<Card.Title className="mb-1" style={{fontSize: '1rem', marginBottom: 0}}>{title}</Card.Title>
-							{isCopycat ? <span className="ms-2 text-primary" style={{fontSize: '1.1rem'}} aria-label="copycat">★</span> : null}
+							<div>
+								{isCopycat ? <span className="ms-2 text-primary" style={{fontSize: '1.1rem'}} aria-label="copycat">★</span> : null}
+								{isUserSubmitted && <Badge bg="success" className="ms-2">Community</Badge>}
+							</div>
 						</div>
 						{cuisine && <div><small className="text-muted">{cuisine}</small></div>}
 						<Card.Text className="mb-3"><small className="text-muted">{difficulty} · {time}</small></Card.Text>
